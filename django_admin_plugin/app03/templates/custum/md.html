@@ -1,0 +1,18 @@
+<table border="1">
+    <tr>
+
+    {% for val1 in name2 %}
+
+        <td>{{ val1 }}</td>
+
+    {% endfor %}
+    </tr>
+    {% for item in name %}
+        <tr>
+            {% for val in item %}
+                <td>{{ val }}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+
+</table>

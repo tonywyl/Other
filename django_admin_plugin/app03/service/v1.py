@@ -35,14 +35,31 @@ class BaseCustom(object):
         self.app_label=model_class._meta.app_label
         self.model_name=model_class._meta.model_name
 
+        self.list_url=None
     def get_add_or_edit_model_form(self):
         if self.add_or_edit_model_form:
             return self.add_or_edit_model_form
-        from django.forms import ModelForm
-        class MyModelForm(ModelForm):
-            class Meta:
-                modul=self.model_class
-                fields="__all__"
+        else:
+            from django.forms import ModelForm,widgets,fields
+
+            custome=fields.CharField(widget=widgets.Input())
+            _m=type('Meta',(object,),{'model':self.model_class,'fields':"__all__",
+                                      'labels':{'username':'用户名','email':'邮箱','ug':'用户组','ur':'角色','name':'用户名'},
+                                      'widgets':{'username':widgets.Input(attrs={'class':'form-control'}),
+                                                 'email':widgets.Input(attrs={'class':'form-control'}),
+                                                 'name':widgets.Input(attrs={'class':'form-control'}),
+                                                 'ug':widgets.Select(attrs={'class':'form-control'}),
+                                                 'ur':widgets.Select(attrs={'class':'form-control'}),
+                                                 },
+                                      'error_messages':{'__all__':'不对',
+                                                        'username':{'required':'不能为空'},'email':{'required':'输入邮箱'}}
+                                      })
+
+            MyModelForm=type('MyModelForm',(ModelForm,),{'Meta':_m})
+        # class MyModelForm(ModelForm):
+        #     class Meta:
+        #         modul=self.model_class
+        #         fields="__all__"
         return MyModelForm
     @property
     def urls(self):
@@ -56,45 +73,47 @@ class BaseCustom(object):
 
         ]
         return urlpatterns
+
     def changelist_view(self,request):
         """
         查看列表
         :param request:
         :return:
         """
-
         #生成页面上的添加按钮：
         #需要的元素: namespace:app_label ,model_name  reverse
         #self.site.namespace
         #self.model_class._meta.app_label
 
-        from django.http.request import QueryDict
-        print(request.GET.urlencode())
 
+
+        from django.http.request import QueryDict
+        # print(request.GET.urlencode())
 
         param_dict=QueryDict(mutable=True)
+
         if request.GET:
             param_dict['_changelistfilter']=request.GET.urlencode()
 
-        print(param_dict.urlencode())
+        # print(param_dict.urlencode())
 
+        base_add_url=reverse("{2}:{0}_{1}_add".format(self.app_label,self.model_name,self.site.namespace))
 
-        base_add_url=reverse("{2}:{0}_{1}_change".format(self.app_label,self.model_name,self.site.namespace),args=object.pk)
-
-        edit_url="{0}?{1}".format(base_add_url,param_dict.urlencode())
-
-
+        add_url="{0}?{1}".format(base_add_url,param_dict.urlencode())
 
         self.request=request
+
         result_list=self.model_class.objects.all()
+
         context={
             'result_list':result_list,
             'list_display':self.list_display,
             'display_change':self,
-            'add_url':edit_url
+            'add_url':add_url
         }
 
         return render(request,'custum/change_list.html',context)
+
     def add_view(self,request):
         """
         添加数据
@@ -102,9 +121,9 @@ class BaseCustom(object):
         :return:
         """
 
-
-        print(request.GET('_changelistfilter'))
+        # print(request.GET('_changelistfilter'))
         if request.method=='GET':
+
             model_form_obj=self.get_add_or_edit_model_form()()
         else:
             model_form_obj=self.get_add_or_edit_model_form()(data=request.POST,files=request.FILES)
@@ -113,39 +132,58 @@ class BaseCustom(object):
                 #添加成功，跳转页面
                 #/custom/app01/userinfo/+request.GET.get('_changelistfileter')
                 base_list_url = reverse("{2}:{0}_{1}_changelist".format(self.app_label, self.model_name, self.site.namespace))
+                # print(request.GET.get('_changelistfilter'),'0000')
+                self.list_url = "{0}?{1}".format(base_list_url, request.GET.get('_changelistfilter'))
+                return redirect(self.list_url)
 
-                list_url = "{0}?{1}".format(base_list_url, request.GET('_changelistfilter'))
-                return redirect(list_url)
-
-        from django.forms import ModelForm
-
-        model_form_cls=self.get_add_or_edit_model_form()
 
         context={
-            'form':model_form_cls,
+            'form':model_form_obj,
         }
-        data='add_view'
+        from django.forms.boundfield import BoundField
+        from django.forms.models import ModelFormMetaclass
+        from django.forms.models import ModelMultipleChoiceField
+        from django.db.models.query import QuerySet
+
+        for item in model_form_obj: #提示显示中文
+            # print(item.label) #这样也可以拿到每个INPUT框的中文
+            #为多选和下拉框 加一个popup
+
+            print(item.field)
+
+
 
         return render(request,'custum/add.html',context)
-    def delete_view(self,reqeust,pk):
+    def delete_view(self,request,pk):
         """
-
         :param reqeust:
         :return:
         """
+        print(request.GET.get('_changelist'),'------')
         info=self.model_class._meta.app_label,self.model_class._meta.model_name
         data="%s_%s_del"%info
-        return HttpResponse(data)
+        self.model_class.objects.filter(id=pk).delete()
+        base_list_url = reverse("{2}:{0}_{1}_changelist".format(self.app_label, self.model_name, self.site.namespace))
+        self.list_url = "{0}?{1}".format(base_list_url, request.GET.get('_changelistfilter'))
+        return redirect(self.list_url)
+
     def change_view(self,request,pk):
 
         obj=self.model_class.objects.filter(pk=pk).first()
         if not obj:
             return HttpResponse('id不存在 ')
 
-        if request.mthod=='GET':
+        if request.method=='GET':
             model_form_obj = self.get_add_or_edit_model_form()(instance=obj)
         else:
-            model_form_obj=self.get_add_or_edit_model_form()(data=request.POST,instance=obj)
+            model_form_obj=self.get_add_or_edit_model_form()(data=request.POST,instance=obj) #没有instance 则表示增加，有表示修改
+
+            if model_form_obj.is_valid:
+                model_form_obj.save()
+            base_list_url = reverse(
+                "{2}:{0}_{1}_changelist".format(self.app_label, self.model_name, self.site.namespace))
+            self.list_url = "{0}?{1}".format(base_list_url, request.GET.get('_changelistfilter'))
+            return redirect(self.list_url)
             
         context={
             'form':model_form_obj
@@ -162,14 +200,14 @@ class Custom(object):
         
         self.app_name='custom'
 
-    def register(self,model_class,xx=BaseCustom): #注册方法如admin.site.register(models.Role) model_clss类也就是表的名称，
+    def register(self,model_class,BaseClass=BaseCustom): #注册方法如admin.site.register(models.Role) model_clss类也就是表的名称，
         """_registry
         {
           _registry[model.Role]:obj
         }
         """
 
-        self._registry[model_class]=xx(model_class,self)
+        self._registry[model_class]=BaseClass(model_class,self)
         print(self._registry,self,'----')
         """
         app名称models类名：BaseCustom 类封装了 app名称models类名,Custum对象

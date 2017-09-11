@@ -1,18 +1,9 @@
+{% extends 'custum/layout.html' %}
 {% load custom_list %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>数据列表</title>
-</head>
-<body>
 
-
-<h3>数据</h3>
+{% block content %}
+<h3>数据列表</h3>
 <!--数据表格 -->
-<a href="{{ add_url }}">添加</a>
+<a href="{{ add_url }}" class="btn btn-default">添加</a>
 <h3>{% func result_list list_display display_change %} </h3>
-
-
-</body>
-</html>
+{% endblock %}

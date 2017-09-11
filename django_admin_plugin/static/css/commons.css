@@ -1,0 +1,89 @@
+body{
+            margin: 0;
+        }
+        .pg-header{
+            /*height: 480px;*/
+            height:48px;
+            min-width:190px;
+            background-color: yellow;
+            line-height: 48px;
+        }
+        .left{
+            float:left;
+        }
+        .right{
+            float: right;
+        }
+        .pg-body{
+            background-color: yellow;
+        }
+        .pg-header .logo{
+            color: black;
+            font-size: 18px;
+            border-right: 1px solid red;
+            width:200px;
+            text-align: center;
+
+        }
+        .menus{
+            width:200px;
+            float: left;
+            background-color: darkgray;
+            position: absolute;
+            left: 0;
+            top: 48px;
+            bottom: 0;
+        }
+        .content1{
+            position: absolute;
+            z-index: 1;
+            left: 200px;
+            top: 48px;
+            bottom: 0;
+            /*background-color: greenyellow;*/
+            min-width: 300px;
+            overflow: scroll;
+        }
+        .pg-header .rmenus a{
+            display: inline-block;
+            padding: 0 15px ;
+        }
+        .pg-header .rmenus a:hover{
+            background-color: #2b669a;
+        }
+        .pg-header .avatar{
+            padding: 0 20px;
+
+        }
+        .pg-header .avatar img{
+            border-radius: 50%;
+        }
+        .pg-header .avatar .userinfo{
+            position: absolute;
+            top: 48px;
+            right: 0px;
+            width: 200px;
+            z-index: 2;
+            background-color: azure;
+            display: none;
+
+
+        }
+        .pg-header .avatar .userinfo a{
+            background: white;
+            /*border: 1px solid black;*/
+        }
+        .pg-header .avatar:hover .userinfo{
+            display: block;
+
+        }
+        .pg-body .menus a{
+            display: block;
+            padding: 1px 10px;
+            border-bottom: 1px solid white;
+
+        }
+        .cls_manager{
+            text-decoration: none;
+            display: none;
+        }

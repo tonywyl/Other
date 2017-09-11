@@ -1,0 +1,29 @@
+<form method="post" novalidate>
+    {% csrf_token %}
+    {% for col in form %}
+
+        {% if col.is_popup %}
+            <p>
+                {{ col.item.field.label }}
+                {{ col.item }}
+                <a href="{{ col.popup_url }}">添加</a>
+                {{ col.item.errors.0 }}
+            </p>
+        {% else %}
+            <p>
+                {{ col.item.field.label }}{{ col.item }}{{ col.item.errors.0 }}
+            </p>
+        {% endif %}
+
+    {% endfor %}
+    <input type="submit" value="提交">
+
+
+</form>
+
+
+
+
+
+
+

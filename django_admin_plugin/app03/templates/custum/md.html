@@ -1,10 +1,8 @@
-<table border="1">
+{% extends 'custum/layout.html' %}
+{% block content %}
     <tr>
-
     {% for val1 in name2 %}
-
         <td>{{ val1 }}</td>
-
     {% endfor %}
     </tr>
     {% for item in name %}
@@ -15,4 +13,4 @@
         </tr>
     {% endfor %}
 
-</table>
+{% endblock  %}

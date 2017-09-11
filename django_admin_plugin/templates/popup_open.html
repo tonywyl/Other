@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>iglk</title>
+</head>
+
+<body>
+<h3>添加新数据</h3>
+<form method="post">
+    {% csrf_token %}
+    用户名：<input type="text" name="name">
+    <input type="submit" value="提交">
+</form>
+<a href="#" onclick="popUrl('xxxxx')">再发起一个</a>
+aaaaa
+<script>
+    function popUrl(url) {
+            window.open(url,'dontknow',"status=1,height:500,width:500,toolbar=0,resizeable=0");
+    }
+
+</script>
+
+</body>
+</html>

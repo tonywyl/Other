@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h3>popup测试</h3>
+<p>用户名：<input type="text"></p>
+<select name="" id="ugID">
+    {% for row in user_info %}
+        <option value="{{ row.pk }}">{{ row.name }}</option>
+    {% endfor %}
+</select>
+<a href="#" onclick="popUrl('/popup_open/?popup=ugID')">添加</a>
+bbbb
+<script>
+    function popUrl(url) {
+        window.open(url,'dontknow',"status=1,hight:300,width:300,toolbar=0,resizeable=0")
+
+    }
+    function popupCallBack(popid,opid,optext) {
+        var tag=document.createElement('option');
+        tag.innerHTML=optext;
+        tag.setAttribute('value',opid);
+        tag.setAttribute('selected','selected');
+        document.getElementById(popid).appendChild(tag)
+    }
+
+</script>
+</body>
+</html>

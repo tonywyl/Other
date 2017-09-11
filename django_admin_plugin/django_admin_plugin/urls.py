@@ -21,7 +21,10 @@ urlpatterns = [
     # url(r'^admin/', admin.site.urls),
     url(r'^test/',views.test),
     url(r'^test1/',views.test1),
-    url(r'^custom/',v1.site.urls)
+    url(r'^custom/',v1.site.urls),
+    url(r'^popup_per/',views.popup),
+    url(r'^popup_open/',views.popup_open),
+
     #"""
     #include 如果URL参数是模块路径，就导入模块，
     #"""

@@ -1,12 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<h3>编辑</h3>
+{% extends 'custum/layout.html' %}
 
+{% block addcontent %}
+<div style="width: 300px">
+    <h3>编辑</h3>
+    <form method="post">{% csrf_token %}
 
-</body>
-</html>
+        {% for row in form %}
+            {{ row.label }}:{{ row }}
+        {% endfor %}
+        <input type="submit" value="提交" class="btn btn-default">
+    </form>
+</div>
+{% endblock %}

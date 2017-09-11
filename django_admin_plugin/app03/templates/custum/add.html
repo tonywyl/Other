@@ -1,15 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'custum/layout.html' %}
+{% include custom_form %}
+{% block addcontent %}
+{% load custom_form %}
 <h3>添加数据</h3>
-<form method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="提交">
-</form>
+{% show_add_edit_form form %}
 
-</body>
-</html>
+
+<h1>没有用templatetag 实现</h1>
+<div style="width: 300px">
+    <form method="post" novalidate>{% csrf_token %}
+
+    {% for row in form %}
+        {{ row.field.label }}:{{ row }}<p style="color: red; text-decoration: none">{{ row.errors.0 }}</p>
+    {% endfor %}
+        <input type="submit" value="提交" class="btn btn-default">
+    </form>
+</div>
+{% endblock %}

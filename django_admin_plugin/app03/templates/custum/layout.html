@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>合哈</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+</head>
+<body>
+<div style="margin: auto;margin-top: 10px;width: 80%">
+    <div class="col-xs-12 col-sm-6 col-sm-4" style="width: 100%; margin-top:-10px">
+        <table class="table table-hover">
+            {% block content %}
+            {% endblock %}
+        </table>
+
+
+        {% block addcontent %}
+        {% endblock %}
+
+    </div>
+</div>
+
+</body>
+</html>
